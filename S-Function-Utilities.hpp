@@ -50,6 +50,16 @@ double extractSFunctionParameter<double>(SimStruct *S, int paramIndex, const dou
     return mxGetScalar(param);
 }
 
+// Specialization for bool
+template<>
+bool extractSFunctionParameter<bool>(SimStruct *S, int paramIndex, const bool& defaultValue) {
+    const mxArray* param = ssGetSFcnParam(S, paramIndex);
+    if (param == nullptr || !mxIsScalar(param)) {
+        return defaultValue; // Default fallback
+    }
+    return static_cast<bool>(mxGetScalar(param));
+}
+
 // Specialization for std::vector<int>
 template<>
 std::vector<int> extractSFunctionParameter<std::vector<int>>(SimStruct *S, int paramIndex, const std::vector<int>& defaultValue) {

@@ -6,10 +6,11 @@
 
 template<typename T>
 void DefineScalarInputPort(SimStruct* S, int portIndex, int isDirectFeedthrough = 1) {
-    // Ensure we have enough input ports
-    int currentNumPorts = ssGetNumInputPorts(S);
-    int requiredPorts = std::max(currentNumPorts, portIndex + 1);
-    ssSetNumInputPorts(S, requiredPorts);
+    // Check we have enough input ports (do not modify the number here)
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineScalarInputPort");
+        return;
+    }
     
     // Set port width to 1 (scalar)
     ssSetInputPortWidth(S, portIndex, 1);
@@ -39,15 +40,16 @@ void DefineScalarInputPort(SimStruct* S, int portIndex, int isDirectFeedthrough 
     }
     
     // Set direct feedthrough
-    ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    //ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
 }
 
 template<typename T>
 void DefineVectorInputPort(SimStruct* S, int portIndex, int width, int isDirectFeedthrough = 1) {
-    // Ensure we have enough input ports
-    int currentNumPorts = ssGetNumInputPorts(S);
-    int requiredPorts = std::max(currentNumPorts, portIndex + 1);
-    ssSetNumInputPorts(S, requiredPorts);
+    // Check we have enough input ports (do not modify the number here)
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineVectorInputPort");
+        return;
+    }
     
     // Set port width
     ssSetInputPortWidth(S, portIndex, width);
@@ -77,16 +79,17 @@ void DefineVectorInputPort(SimStruct* S, int portIndex, int width, int isDirectF
     }
     
     // Set direct feedthrough
-    ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    //ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
 }
 
 
 template<typename T>
 void Define2DMatrixInputPort(SimStruct* S, int portIndex, int rows, int cols, int isDirectFeedthrough = 1) {
-    // Ensure we have enough input ports
-    int currentNumPorts = ssGetNumInputPorts(S);
-    int requiredPorts = std::max(currentNumPorts, portIndex + 1);
-    ssSetNumInputPorts(S, requiredPorts);
+    // Check we have enough input ports (do not modify the number here)
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for Define2DMatrixInputPort");
+        return;
+    }
     
     // Set port width (total number of elements)
     ssSetInputPortWidth(S, portIndex, rows * cols);
@@ -119,7 +122,7 @@ void Define2DMatrixInputPort(SimStruct* S, int portIndex, int rows, int cols, in
     }
     
     // Set direct feedthrough
-    ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    //ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
 }
 
 template<typename T>

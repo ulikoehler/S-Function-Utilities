@@ -17,6 +17,9 @@ Call these functions in the S-Function's `mdlInitializeSizes` method, after you 
 
 static void mdlInitializeSizes(SimStruct *S)
 {
+    ssSetNumInputPorts(S, 8);
+    ssSetNumOutputPorts(S, 2);
+
     // Example: Define a scalar input port (double)
     DefineScalarInputPort<real_T>(S, 0);
 
@@ -33,7 +36,7 @@ static void mdlInitializeSizes(SimStruct *S)
     DefineVectorOutputPort<real_T>(S, 1, DOF);
 
     // Example: Define a 2D matrix output port (float, 2x6)
-    Define2DMatrixOutputPort<real32_T>(S, 2, 2, 6);
+    Define2DMatrixOutputPort<real32_T>(S, 2, /*rows=*/2, /*cols=*/6);
 }
 ```
 

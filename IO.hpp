@@ -6,9 +6,9 @@
 
 template<typename T>
 void DefineScalarInputPort(SimStruct* S, int portIndex, int isDirectFeedthrough = 1) {
-    // Check we have enough input ports (do not modify the number here)
+    // Check we have enough input ports, and increase it if required
     if (ssGetNumInputPorts(S) <= portIndex) {
-        ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineScalarInputPort");
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineScalarInputPort, check ssSetNumInputPorts()");
         return;
     }
     
@@ -45,9 +45,9 @@ void DefineScalarInputPort(SimStruct* S, int portIndex, int isDirectFeedthrough 
 
 template<typename T>
 void DefineVectorInputPort(SimStruct* S, int portIndex, int width, int isDirectFeedthrough = 1) {
-    // Check we have enough input ports (do not modify the number here)
+    // Check we have enough input ports, and increase it if required
     if (ssGetNumInputPorts(S) <= portIndex) {
-        ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineVectorInputPort");
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineVectorInputPort, check ssSetNumInputPorts()");
         return;
     }
     
@@ -87,7 +87,7 @@ template<typename T>
 void Define2DMatrixInputPort(SimStruct* S, int portIndex, int rows, int cols, int isDirectFeedthrough = 1) {
     // Check we have enough input ports (do not modify the number here)
     if (ssGetNumInputPorts(S) <= portIndex) {
-        ssSetErrorStatus(S, "Insufficient number of input ports configured for Define2DMatrixInputPort");
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for Define2DMatrixInputPort, check ssSetNumInputPorts()");
         return;
     }
     
@@ -127,11 +127,12 @@ void Define2DMatrixInputPort(SimStruct* S, int portIndex, int rows, int cols, in
 
 template<typename T>
 void DefineScalarOutputPort(SimStruct* S, int portIndex) {
-    // Ensure we have enough output ports
-    int currentNumPorts = ssGetNumOutputPorts(S);
-    int requiredPorts = std::max(currentNumPorts, portIndex + 1);
-    ssSetNumOutputPorts(S, requiredPorts);
-    
+    // Check we have enough output ports (do not modify the number here)
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for DefineScalarOutputPort, check ssSetNumOutputPorts()");
+        return;
+    }
+
     // Set port width to 1 (scalar)
     ssSetOutputPortWidth(S, portIndex, 1);
     
@@ -162,11 +163,12 @@ void DefineScalarOutputPort(SimStruct* S, int portIndex) {
 
 template<typename T>
 void DefineVectorOutputPort(SimStruct* S, int portIndex, int width) {
-    // Ensure we have enough output ports
-    int currentNumPorts = ssGetNumOutputPorts(S);
-    int requiredPorts = std::max(currentNumPorts, portIndex + 1);
-    ssSetNumOutputPorts(S, requiredPorts);
-    
+    // Check we have enough output ports (do not modify the number here)
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for DefineVectorOutputPort, check ssSetNumOutputPorts()");
+        return;
+    }
+
     // Set port width
     ssSetOutputPortWidth(S, portIndex, width);
     
@@ -197,11 +199,12 @@ void DefineVectorOutputPort(SimStruct* S, int portIndex, int width) {
 
 template<typename T>
 void Define2DMatrixOutputPort(SimStruct* S, int portIndex, int rows, int cols) {
-    // Ensure we have enough output ports
-    int currentNumPorts = ssGetNumOutputPorts(S);
-    int requiredPorts = std::max(currentNumPorts, portIndex + 1);
-    ssSetNumOutputPorts(S, requiredPorts);
-    
+    // Check we have enough output ports (do not modify the number here)
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for Define2DMatrixOutputPort, check ssSetNumOutputPorts()");
+        return;
+    }
+
     // Set port width (total number of elements)
     ssSetOutputPortWidth(S, portIndex, rows * cols);
     

@@ -339,7 +339,7 @@ std::optional<std::vector<std::vector<std::string>>> extractSFunctionMaskTable(S
         {
 
             const mxArray *cellElement = mxGetCell(param, i + dims[0] * j);
-            fprintf(stderr, "Reading cell (%d, %d): Type %s\n", (int)i, (int)j, mxGetClassName(cellElement));
+            // fprintf(stderr, "Reading cell (%d, %d): Type %s\n", (int)i, (int)j, mxGetClassName(cellElement));
             if (cellElement == nullptr || (!mxIsChar(cellElement) && !mxIsDouble(cellElement)))
             {
                 errorMessage = "Cell element " + std::to_string(i) + " in parameter at index " + std::to_string(paramIndex) + " is not a string";

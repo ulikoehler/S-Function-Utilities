@@ -5,7 +5,7 @@
 #include <type_traits>
 
 template<typename T>
-void DefineScalarInputPort(SimStruct* S, int portIndex, int isDirectFeedthrough = 1) {
+void DefineScalarInputPort(SimStruct* S, int portIndex, int isDirectFeedthrough = 0) {
     // Check we have enough input ports, and increase it if required
     if (ssGetNumInputPorts(S) <= portIndex) {
         ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineScalarInputPort, check ssSetNumInputPorts()");
@@ -40,11 +40,11 @@ void DefineScalarInputPort(SimStruct* S, int portIndex, int isDirectFeedthrough 
     }
     
     // Set direct feedthrough
-    //ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
 }
 
 template<typename T>
-void DefineVectorInputPort(SimStruct* S, int portIndex, int width, int isDirectFeedthrough = 1) {
+void DefineVectorInputPort(SimStruct* S, int portIndex, int width, int isDirectFeedthrough = 0) {
     // Check we have enough input ports, and increase it if required
     if (ssGetNumInputPorts(S) <= portIndex) {
         ssSetErrorStatus(S, "Insufficient number of input ports configured for DefineVectorInputPort, check ssSetNumInputPorts()");
@@ -79,12 +79,12 @@ void DefineVectorInputPort(SimStruct* S, int portIndex, int width, int isDirectF
     }
     
     // Set direct feedthrough
-    //ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
 }
 
 
 template<typename T>
-void Define2DMatrixInputPort(SimStruct* S, int portIndex, int rows, int cols, int isDirectFeedthrough = 1) {
+void Define2DMatrixInputPort(SimStruct* S, int portIndex, int rows, int cols, int isDirectFeedthrough = 0) {
     // Check we have enough input ports (do not modify the number here)
     if (ssGetNumInputPorts(S) <= portIndex) {
         ssSetErrorStatus(S, "Insufficient number of input ports configured for Define2DMatrixInputPort, check ssSetNumInputPorts()");
@@ -122,7 +122,7 @@ void Define2DMatrixInputPort(SimStruct* S, int portIndex, int rows, int cols, in
     }
     
     // Set direct feedthrough
-    //ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
 }
 
 template<typename T>

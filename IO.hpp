@@ -372,8 +372,16 @@ void SetScalarOutputPort(SimStruct *S, int portIndex, T value)
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port value
-    *((T *)ssGetOutputPortSignal(S, portIndex)) = value;
+    *outputSignal = value;
 }
 
 template <typename T>
@@ -393,8 +401,16 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, const std::vector<T> &valu
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
-    std::copy(values.begin(), values.end(), ssGetOutputPortSignal(S, portIndex));
+    std::copy(values.begin(), values.end(), outputSignal);
 }
 
 template <typename T>
@@ -414,8 +430,16 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T *values, size_t size)
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
-    std::copy(values, values + size, ssGetOutputPortSignal(S, portIndex));
+    std::copy(values, values + size, outputSignal);
 }
 
 template <typename T, size_t W>
@@ -435,8 +459,16 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T (&values)[W])
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
-    std::copy(values, values + W, ssGetOutputPortSignal(S, portIndex));
+    std::copy(values, values + W, outputSignal);
 }
 
 template <typename T, size_t W>
@@ -456,8 +488,16 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, std::array<T, W> values)
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
-    std::copy(values.begin(), values.end(), ssGetOutputPortSignal(S, portIndex));
+    std::copy(values.begin(), values.end(), outputSignal);
 }
 
 template <typename T>
@@ -476,10 +516,18 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::vector<std::vector<
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
     for (size_t i = 0; i < values.size(); ++i)
     {
-        std::copy(values[i].begin(), values[i].end(), ssGetOutputPortSignal(S, portIndex) + i * values[i].size());
+        std::copy(values[i].begin(), values[i].end(), outputSignal + i * values[i].size());
     }
 }
 
@@ -499,15 +547,23 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values, size_t rows,
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
     for (size_t i = 0; i < rows; ++i)
     {
-        std::copy(values[i], values[i] + cols, ssGetOutputPortSignal(S, portIndex) + i * cols);
+        std::copy(values[i], values[i] + cols, outputSignal + i * cols);
     }
 }
 
 template <typename T, size_t W, size_t H>
-void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values)
+void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T (&values)[W][H])
 {
     // Check we have enough output ports
     if (ssGetNumOutputPorts(S) <= portIndex)
@@ -522,10 +578,18 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values)
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
     for (size_t i = 0; i < H; ++i)
     {
-        std::copy(values[i], values[i] + W, ssGetOutputPortSignal(S, portIndex) + i * W);
+        std::copy(values[i], values[i] + W, outputSignal + i * W);
     }
 }
 
@@ -545,10 +609,18 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::array<std::array<T,
         return;
     }
 
+    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssSetWarningStatus(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        return;
+    }
+
     // Set the output port values
     for (size_t i = 0; i < H; ++i)
     {
-        std::copy(values[i].begin(), values[i].end(), ssGetOutputPortSignal(S, portIndex) + i * W);
+        std::copy(values[i].begin(), values[i].end(), outputSignal + i * W);
     }
 }
 
@@ -562,15 +634,16 @@ std::optional<T> GetScalarInputPort(SimStruct *S, int portIndex)
         return std::nullopt;
     }
 
-    T *inputSignal = ssGetInputPortSignal(S, portIndex);
+    T* inputSignal = (T*)ssGetInputPortSignal(S, portIndex);
+    // Check if inputSignal is valid
     if (!inputSignal)
     {
-        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
-        return std::nullopt;
+        ssSetWarningStatus(S, "Failed to get input port signal");
+        return;
     }
 
     // Get the input port value
-    return *((T *)inputSignal);
+    return *inputSignal;
 }
 
 template <typename T>
@@ -587,7 +660,7 @@ std::optional<std::vector<T>> GetVectorInputPort(SimStruct *S, int portIndex, si
     T *inputSignal = ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssSetWarningStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
         return std::nullopt;
     }
 
@@ -621,7 +694,7 @@ std::optional<std::array<T, W>> GetVectorInputPort(SimStruct *S, int portIndex)
     T *inputSignal = ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssSetWarningStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
         return std::nullopt;
     }
 
@@ -642,7 +715,7 @@ std::optional<std::array<T, W>> GetVectorInputPort(SimStruct *S, int portIndex)
 }
 
 template <typename T, size_t W>
-bool GetVectorInputPort(SimStruct *S, int portIndex, T *output)
+bool GetVectorInputPort(SimStruct *S, int portIndex, T (&output)[W])
 {
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)
@@ -655,7 +728,7 @@ bool GetVectorInputPort(SimStruct *S, int portIndex, T *output)
     T *inputSignal = ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssSetWarningStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
         return false;
     }
 
@@ -689,7 +762,7 @@ std::optional<std::vector<std::vector<T>>> Get2DMatrixInputPort(SimStruct *S, in
     T *inputSignal = ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssSetWarningStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
         return std::nullopt;
     }
 
@@ -728,7 +801,7 @@ std::optional<std::array<std::array<T, H>, W>> Get2DMatrixInputPort(SimStruct *S
     T *inputSignal = ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssSetWarningStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
         return std::nullopt;
     }
 
@@ -752,7 +825,7 @@ std::optional<std::array<std::array<T, H>, W>> Get2DMatrixInputPort(SimStruct *S
 }
 
 template <typename T, size_t W, size_t H>
-bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T **output)
+bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T (&output)[W][H])
 {
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)
@@ -765,7 +838,7 @@ bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T **output)
     T *inputSignal = ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssSetWarningStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
         return false;
     }
 
@@ -773,7 +846,7 @@ bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T **output)
     if (ssGetInputPortWidth(S, portIndex) != W * H)
     {
         ssSetErrorStatus(S, "Input port width does not match expected width");
-        return std::nullopt;
+        return false;
     }
 
     // Get the input port values

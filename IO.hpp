@@ -235,3 +235,136 @@ void Define2DMatrixOutputPort(SimStruct* S, int portIndex, int rows, int cols) {
         ssSetOutputPortDataType(S, portIndex, SS_DOUBLE);
     }
 }
+
+template<typename T>
+void SetScalarOutputPort(SimStruct* S, int portIndex, T value) {
+    // Check we have enough output ports
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for SetScalarOutputPort");
+        return;
+    }
+
+    // Set the output port value
+    *ssGetOutputPortSignal(S, portIndex) = value;
+}
+    
+
+template<typename T>
+void SetVectorOutputPort(SimStruct* S, int portIndex, const std::vector<T>& values) {
+    // Check we have enough output ports
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for SetVectorOutputPort");
+        return;
+    }
+
+    // Set the output port values
+    std::copy(values.begin(), values.end(), ssGetOutputPortSignal(S, portIndex));
+}
+
+template<typename T>
+void SetVectorOutputPort(SimStruct* S, int portIndex, T *values, size_t size) {
+    // Check we have enough output ports
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for SetVectorOutputPort");
+        return;
+    }
+
+    // Set the output port values
+    std::copy(values, values + size, ssGetOutputPortSignal(S, portIndex));
+}
+
+template<typename T>
+void Set2DMatrixOutputPort(SimStruct* S, int portIndex, std::vector<std::vector<T>>& values) {
+    // Check we have enough output ports
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for Set2DMatrixOutputPort");
+        return;
+    }
+
+    // Set the output port values
+    for (size_t i = 0; i < values.size(); ++i) {
+        std::copy(values[i].begin(), values[i].end(), ssGetOutputPortSignal(S, portIndex) + i * values[i].size());
+    }
+}
+
+template<typename T>
+void Set2DMatrixOutputPort(SimStruct* S, int portIndex, T **values, size_t rows, size_t cols) {
+    // Check we have enough output ports
+    if (ssGetNumOutputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for Set2DMatrixOutputPort");
+        return;
+    }
+
+    // Set the output port values
+    for (size_t i = 0; i < rows; ++i) {
+        std::copy(values[i], values[i] + cols, ssGetOutputPortSignal(S, portIndex) + i * cols);
+    }
+}
+
+template<typename T>
+std::optional<T> GetScalarInputPort(SimStruct* S, int portIndex) {
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for GetScalarInputPort");
+        return std::nullopt;
+    }
+
+    T* inputSignal = ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal) {
+        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        return std::nullopt;
+    }
+
+    // Get the input port value
+    return *inputSignal;
+}
+
+template<typename T>
+std::optional<std::vector<T>> GetVectorInputPort(SimStruct* S, int portIndex) {
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for GetVectorInputPort");
+        return std::nullopt;
+    }
+
+    // Get the input port signal
+    T* inputSignal = ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal) {
+        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        return std::nullopt;
+    }
+
+    // Get the input port values
+    std::vector<T> values;
+    for (size_t i = 0; i < ssGetInputPortWidth(S, portIndex); ++i) {
+        values.push_back(inputSignal[i]);
+    }
+    return values;
+}
+
+template<typename T>
+std::optional<std::vector<std::vector<T>>> Get2DMatrixInputPort(SimStruct* S, int portIndex) {
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for GetVectorInputPort");
+        return std::nullopt;
+    }
+
+    // Get the input port signal
+    T* inputSignal = ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal) {
+        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        return std::nullopt;
+    }
+
+    // Get the input port values
+    std::vector<std::vector<T>> values;
+    for (size_t i = 0; i < ssGetInputPortWidth(S, portIndex); ++i) {
+        std::vector<T> row;
+        for (size_t j = 0; j < ssGetInputPortHeight(S, portIndex); ++j) {
+            row.push_back(inputSignal[i * ssGetInputPortHeight(S, portIndex) + j]);
+        }
+        values.push_back(row);
+    }
+    return values;
+}

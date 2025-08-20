@@ -376,7 +376,7 @@ void SetScalarOutputPort(SimStruct *S, int portIndex, T value)
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -405,7 +405,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, const std::vector<T> &valu
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -434,7 +434,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T *values, size_t size)
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -463,7 +463,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T (&values)[W])
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -492,7 +492,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, std::array<T, W> values)
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -520,7 +520,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::vector<std::vector<
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -551,7 +551,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values, size_t rows,
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -582,7 +582,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T (&values)[W][H])
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -613,7 +613,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::array<std::array<T,
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, "Failed to get output port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
         return;
     }
 
@@ -638,8 +638,8 @@ std::optional<T> GetScalarInputPort(SimStruct *S, int portIndex)
     // Check if inputSignal is valid
     if (!inputSignal)
     {
-        ssWarning(S, "Failed to get input port signal");
-        return;
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
+        return std::nullopt;
     }
 
     // Get the input port value
@@ -657,10 +657,10 @@ std::optional<std::vector<T>> GetVectorInputPort(SimStruct *S, int portIndex, si
     }
 
     // Get the input port signal
-    T *inputSignal = ssGetInputPortSignal(S, portIndex);
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssWarning(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
         return std::nullopt;
     }
 
@@ -691,10 +691,10 @@ std::optional<std::array<T, W>> GetVectorInputPort(SimStruct *S, int portIndex)
     }
 
     // Get the input port signal
-    T *inputSignal = ssGetInputPortSignal(S, portIndex);
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssWarning(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
         return std::nullopt;
     }
 
@@ -725,10 +725,10 @@ bool GetVectorInputPort(SimStruct *S, int portIndex, T (&output)[W])
     }
 
     // Get the input port signal
-    T *inputSignal = ssGetInputPortSignal(S, portIndex);
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssWarning(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
         return false;
     }
 
@@ -759,10 +759,10 @@ std::optional<std::vector<std::vector<T>>> Get2DMatrixInputPort(SimStruct *S, in
     }
 
     // Get the input port signal
-    T *inputSignal = ssGetInputPortSignal(S, portIndex);
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssWarning(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
         return std::nullopt;
     }
 
@@ -798,10 +798,10 @@ std::optional<std::array<std::array<T, H>, W>> Get2DMatrixInputPort(SimStruct *S
     }
 
     // Get the input port signal
-    T *inputSignal = ssGetInputPortSignal(S, portIndex);
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssWarning(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
         return std::nullopt;
     }
 
@@ -835,10 +835,10 @@ bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T (&output)[W][H])
     }
 
     // Get the input port signal
-    T *inputSignal = ssGetInputPortSignal(S, portIndex);
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssWarning(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
         return false;
     }
 

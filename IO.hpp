@@ -343,6 +343,29 @@ std::optional<std::vector<T>> GetVectorInputPort(SimStruct* S, int portIndex) {
 }
 
 template<typename T>
+bool GetVectorInputPort(SimStruct* S, int portIndex, T *output) {
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for GetVectorInputPort");
+        return false;
+    }
+
+    // Get the input port signal
+    T* inputSignal = ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal) {
+        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        return false;
+    }
+
+    // Get the input port values
+    for (size_t i = 0; i < ssGetInputPortWidth(S, portIndex); ++i) {
+        output[i] = inputSignal[i];
+    }
+
+    return true;
+}
+
+template<typename T>
 std::optional<std::vector<std::vector<T>>> Get2DMatrixInputPort(SimStruct* S, int portIndex) {
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex) {
@@ -367,4 +390,29 @@ std::optional<std::vector<std::vector<T>>> Get2DMatrixInputPort(SimStruct* S, in
         values.push_back(row);
     }
     return values;
+}
+
+template<typename T>
+bool Get2DMatrixInputPort(SimStruct* S, int portIndex, T** output) {
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex) {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for GetVectorInputPort");
+        return false;
+    }
+
+    // Get the input port signal
+    T* inputSignal = ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal) {
+        ssSetErrorStatus(S, "Failed to get input port signal for port index " + std::to_string(portIndex));
+        return false;
+    }
+
+    // Get the input port values
+    for (size_t i = 0; i < ssGetInputPortWidth(S, portIndex); ++i) {
+        for (size_t j = 0; j < ssGetInputPortHeight(S, portIndex); ++j) {
+            output[i][j] = inputSignal[i * ssGetInputPortHeight(S, portIndex) + j];
+        }
+    }
+
+    return true;
 }

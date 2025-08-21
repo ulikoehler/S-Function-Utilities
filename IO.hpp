@@ -446,7 +446,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T *values, size_t size)
 }
 
 template <typename T, size_t W>
-void SetVectorOutputPort(SimStruct *S, int portIndex, T (&values)[W])
+void SetVectorOutputPort(SimStruct *S, int portIndex, T *values)
 {
     // Check we have enough output ports
     if (ssGetNumOutputPorts(S) <= portIndex)
@@ -718,7 +718,7 @@ std::optional<std::array<T, W>> GetVectorInputPort(SimStruct *S, int portIndex)
 }
 
 template <typename T, size_t W>
-bool GetVectorInputPort(SimStruct *S, int portIndex, T (&output)[W])
+bool GetVectorInputPort(SimStruct *S, int portIndex, T *output)
 {
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)

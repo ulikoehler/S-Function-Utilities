@@ -841,6 +841,74 @@ bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T *values)
 }
 
 template <typename T, size_t W, size_t H>
+bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T **values)
+{
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex)
+    {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for Get2DMatrixInputPort");
+        return false;
+    }
+
+    // Get the input port signal
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal)
+    {
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
+        return false;
+    }
+
+    // Check if the input port width matches the expected width
+    if (ssGetInputPortWidth(S, portIndex) != W * H)
+    {
+        ssSetErrorStatus(S, "Input port width does not match expected width");
+        return false;
+    }
+
+    // Get the input port values and copy them to the 2D array
+    for (size_t i = 0; i < W; ++i)
+    {
+        std::copy(inputSignal + i * H, inputSignal + (i + 1) * H, values[i]);
+    }
+
+    return true;
+}
+
+template <typename T, size_t W, size_t H>
+bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T (&values)[W][H])
+{
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex)
+    {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for Get2DMatrixInputPort");
+        return false;
+    }
+
+    // Get the input port signal
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal)
+    {
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
+        return false;
+    }
+
+    // Check if the input port width matches the expected width
+    if (ssGetInputPortWidth(S, portIndex) != W * H)
+    {
+        ssSetErrorStatus(S, "Input port width does not match expected width");
+        return false;
+    }
+
+    // Get the input port values and copy them to the 2D array
+    for (size_t i = 0; i < W; ++i)
+    {
+        std::copy(inputSignal + i * H, inputSignal + (i + 1) * H, values[i]);
+    }
+
+    return true;
+}
+
+template <typename T, size_t W, size_t H>
 bool GetInputPort(SimStruct *S, int portIndex, T *output){
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)

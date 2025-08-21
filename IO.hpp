@@ -619,6 +619,68 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::array<std::array<T,
     }
 }
 
+template <typename T, size_t W, size_t H>
+void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values)
+{
+    // Check we have enough output ports
+    if (ssGetNumOutputPorts(S) <= portIndex)
+    {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for Set2DMatrixOutputPort");
+        return;
+    }
+
+    if (ssGetOutputPortWidth(S, portIndex) != W * H)
+    {
+        ssSetErrorStatus(S, "Output port width does not match expected width");
+        return;
+    }
+
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
+        return;
+    }
+
+    // Set the output port values from 2D array
+    for (size_t i = 0; i < W; ++i)
+    {
+        std::copy(values[i], values[i] + H, outputSignal + i * H);
+    }
+}
+
+template <typename T, size_t W, size_t H>
+void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T (&values)[W][H])
+{
+    // Check we have enough output ports
+    if (ssGetNumOutputPorts(S) <= portIndex)
+    {
+        ssSetErrorStatus(S, "Insufficient number of output ports configured for Set2DMatrixOutputPort");
+        return;
+    }
+
+    if (ssGetOutputPortWidth(S, portIndex) != W * H)
+    {
+        ssSetErrorStatus(S, "Output port width does not match expected width");
+        return;
+    }
+
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
+    // Check if outputSignal is valid
+    if (!outputSignal)
+    {
+        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
+        return;
+    }
+
+    // Set the output port values from 2D array
+    for (size_t i = 0; i < W; ++i)
+    {
+        std::copy(values[i], values[i] + H, outputSignal + i * H);
+    }
+}
+
 template <typename T>
 std::optional<T> GetScalarInputPort(SimStruct *S, int portIndex)
 {

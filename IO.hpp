@@ -707,7 +707,7 @@ std::optional<std::array<T, W>> GetVectorInputPort(SimStruct *S, int portIndex)
 }
 
 template <typename T, size_t W>
-bool GetVectorInputPort(SimStruct *S, int portIndex, T *output)
+bool GetVectorInputPort(SimStruct *S, int portIndex, T *values)
 {
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)
@@ -731,7 +731,7 @@ bool GetVectorInputPort(SimStruct *S, int portIndex, T *output)
         return false;
     }
 
-    std::copy(inputSignal, inputSignal + W, output);
+    std::copy(inputSignal, inputSignal + W, values);
 
     return true;
 }
@@ -810,7 +810,7 @@ std::optional<std::array<std::array<T, H>, W>> Get2DMatrixInputPort(SimStruct *S
 }
 
 template <typename T, size_t W, size_t H>
-bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T *output)
+bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T *values)
 {
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)
@@ -835,7 +835,67 @@ bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T *output)
     }
 
     // Get the input port values
+    std::copy(inputSignal, inputSignal + (W * H), values);
+
+    return true;
+}
+
+template <typename T, size_t W, size_t H>
+bool GetInputPort(SimStruct *S, int portIndex, T *output){
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex)
+    {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for GetInputPort");
+        return false;
+    }
+
+    // Check if the input port width matches the expected width
+    if (ssGetInputPortWidth(S, portIndex) != W * H)
+    {
+        ssSetErrorStatus(S, "Input port width does not match expected width");
+        return false;
+    }
+
+    // Get the input port signal
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal)
+    {
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
+        return false;
+    }
+
+    // Get the input port values
     std::copy(inputSignal, inputSignal + (W * H), output);
+
+    return true;
+}
+
+template <typename T>
+bool GetInputPort(SimStruct *S, int portIndex, T *output, size_t width = 1, size_t height = 1){
+    // Check we have enough input ports
+    if (ssGetNumInputPorts(S) <= portIndex)
+    {
+        ssSetErrorStatus(S, "Insufficient number of input ports configured for GetInputPort");
+        return false;
+    }
+
+    // Check if the input port width matches the expected width
+    if (ssGetInputPortWidth(S, portIndex) != width * height)
+    {
+        ssSetErrorStatus(S, "Input port width does not match expected width");
+        return false;
+    }
+
+    // Get the input port signal
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
+    if (!inputSignal)
+    {
+        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
+        return false;
+    }
+
+    // Get the input port values
+    std::copy(inputSignal, inputSignal + (width * height), output);
 
     return true;
 }

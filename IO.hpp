@@ -63,6 +63,7 @@ void DefineScalarInputPort(SimStruct *S, int portIndex, int isDirectFeedthrough 
 
     // Set direct feedthrough
     ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    ssSetInputPortRequiredContiguous(S, portIndex, 1);
 }
 
 template <typename T>
@@ -123,6 +124,7 @@ void DefineVectorInputPort(SimStruct *S, int portIndex, int width, int isDirectF
 
     // Set direct feedthrough
     ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    ssSetInputPortRequiredContiguous(S, portIndex, 1);
 }
 
 template <typename T>
@@ -186,6 +188,7 @@ void Define2DMatrixInputPort(SimStruct *S, int portIndex, int rows, int cols, in
 
     // Set direct feedthrough
     ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
+    ssSetInputPortRequiredContiguous(S, portIndex, 1);
 }
 
 template <typename T>

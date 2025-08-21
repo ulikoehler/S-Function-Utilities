@@ -535,7 +535,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::vector<std::vector<
 }
 
 template <typename T>
-void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values, size_t rows, size_t cols)
+void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T *values, size_t rows, size_t cols)
 {
     // Check we have enough output ports
     if (ssGetNumOutputPorts(S) <= portIndex)
@@ -558,15 +558,11 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values, size_t rows,
         return;
     }
 
-    // Set the output port values
-    for (size_t i = 0; i < rows; ++i)
-    {
-        std::copy(values[i], values[i] + cols, outputSignal + i * cols);
-    }
+    std::copy(values, values + (rows * cols), outputSignal);
 }
 
 template <typename T, size_t W, size_t H>
-void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T (&values)[W][H])
+void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T *values)
 {
     // Check we have enough output ports
     if (ssGetNumOutputPorts(S) <= portIndex)
@@ -589,11 +585,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T (&values)[W][H])
         return;
     }
 
-    // Set the output port values
-    for (size_t i = 0; i < H; ++i)
-    {
-        std::copy(values[i], values[i] + W, outputSignal + i * W);
-    }
+    std::copy(values, values + (W * H), outputSignal);
 }
 
 template <typename T, size_t W, size_t H>
@@ -710,10 +702,7 @@ std::optional<std::array<T, W>> GetVectorInputPort(SimStruct *S, int portIndex)
 
     // Get the input port values
     std::array<T, W> values;
-    for (size_t i = 0; i < W; ++i)
-    {
-        values[i] = inputSignal[i];
-    }
+    std::copy(inputSignal, inputSignal + W, values.begin());
     return values;
 }
 
@@ -742,11 +731,7 @@ bool GetVectorInputPort(SimStruct *S, int portIndex, T *output)
         return false;
     }
 
-    // Get the input port values
-    for (size_t i = 0; i < W; ++i)
-    {
-        output[i] = inputSignal[i];
-    }
+    std::copy(inputSignal, inputSignal + W, output);
 
     return true;
 }
@@ -819,16 +804,13 @@ std::optional<std::array<std::array<T, H>, W>> Get2DMatrixInputPort(SimStruct *S
     std::array<std::array<T, H>, W> values;
     for (size_t i = 0; i < W; ++i)
     {
-        for (size_t j = 0; j < H; ++j)
-        {
-            values[i][j] = inputSignal[i * H + j];
-        }
+        std::copy(&values[i][0], &values[i][0] + H, inputSignal + i * H);
     }
     return values;
 }
 
 template <typename T, size_t W, size_t H>
-bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T (&output)[W][H])
+bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T *output)
 {
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)
@@ -853,13 +835,7 @@ bool Get2DMatrixInputPort(SimStruct *S, int portIndex, T (&output)[W][H])
     }
 
     // Get the input port values
-    for (size_t i = 0; i < W; ++i)
-    {
-        for (size_t j = 0; j < H; ++j)
-        {
-            output[i][j] = inputSignal[i * H + j];
-        }
-    }
+    std::copy(inputSignal, inputSignal + (W * H), output);
 
     return true;
 }

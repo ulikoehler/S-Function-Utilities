@@ -19,7 +19,7 @@ void DefineScalarInputPort(SimStruct *S, int portIndex, int isDirectFeedthrough 
     ssSetInputPortWidth(S, portIndex, 1);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T>)
+    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
     {
         ssSetInputPortDataType(S, portIndex, SS_UINT8);
     }
@@ -79,7 +79,7 @@ void DefineVectorInputPort(SimStruct *S, int portIndex, int width, int isDirectF
     ssSetInputPortWidth(S, portIndex, width);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T>)
+    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
     {
         ssSetInputPortDataType(S, portIndex, SS_UINT8);
     }
@@ -142,7 +142,7 @@ void Define2DMatrixInputPort(SimStruct *S, int portIndex, int rows, int cols, in
     ssSetInputPortMatrixDimensions(S, portIndex, rows, cols);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T>)
+    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
     {
         ssSetInputPortDataType(S, portIndex, SS_UINT8);
     }
@@ -202,7 +202,7 @@ void DefineScalarOutputPort(SimStruct *S, int portIndex)
     ssSetOutputPortWidth(S, portIndex, 1);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T>)
+    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
     {
         ssSetOutputPortDataType(S, portIndex, SS_UINT8);
     }
@@ -259,7 +259,7 @@ void DefineVectorOutputPort(SimStruct *S, int portIndex, int width)
     ssSetOutputPortWidth(S, portIndex, width);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T>)
+    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
     {
         ssSetOutputPortDataType(S, portIndex, SS_UINT8);
     }
@@ -319,7 +319,7 @@ void Define2DMatrixOutputPort(SimStruct *S, int portIndex, int rows, int cols)
     ssSetOutputPortMatrixDimensions(S, portIndex, rows, cols);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T>)
+    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
     {
         ssSetOutputPortDataType(S, portIndex, SS_UINT8);
     }
@@ -372,7 +372,7 @@ void SetScalarOutputPort(SimStruct *S, int portIndex, T value)
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -401,7 +401,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, const std::vector<T> &valu
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -430,7 +430,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T *values, size_t size)
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -459,7 +459,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T (&values)[W])
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -488,7 +488,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, std::array<T, W> values)
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -516,7 +516,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::vector<std::vector<
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -547,7 +547,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T **values, size_t rows,
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -578,7 +578,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, T (&values)[W][H])
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -609,7 +609,7 @@ void Set2DMatrixOutputPort(SimStruct *S, int portIndex, std::array<std::array<T,
         return;
     }
 
-    T* outputSignal = (T*)ssGetOutputPortSignal(S, portIndex);
+    T *outputSignal = (T *)ssGetOutputPortSignal(S, portIndex);
     // Check if outputSignal is valid
     if (!outputSignal)
     {
@@ -634,7 +634,7 @@ std::optional<T> GetScalarInputPort(SimStruct *S, int portIndex)
         return std::nullopt;
     }
 
-    T* inputSignal = (T*)ssGetInputPortSignal(S, portIndex);
+    T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     // Check if inputSignal is valid
     if (!inputSignal)
     {

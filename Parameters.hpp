@@ -14,7 +14,7 @@ std::optional<T> extractSFunctionParameter(SimStruct *S, int paramIndex);
  * Since logically, only one error message can be active at any one time,
  * we store it in this variable.
  */
-std::string errorMessage;
+std::string errorMessageParameters;
 
 // Specialization for std::string
 template <>
@@ -23,26 +23,26 @@ std::optional<std::string> extractSFunctionParameter<std::string>(SimStruct *S, 
     // Check if the number of configured parameters is sufficient
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     // Get parameter
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsChar(param))
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not a string but " + mxGetClassName(param);
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not a string but " + mxGetClassName(param);
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
 
@@ -64,33 +64,33 @@ std::optional<int> extractSFunctionParameter<int>(SimStruct *S, int paramIndex)
     // Check if the number of configured parameters is sufficient
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsNumeric(param) || mxGetNumberOfElements(param) != 1)
     {
         if (!mxIsNumeric(param))
         {
-            errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not numeric but " + mxGetClassName(param);
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not numeric but " + mxGetClassName(param);
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
         if (mxGetNumberOfElements(param) != 1)
         {
-            errorMessage = "Parameter at index " + std::to_string(paramIndex) + " must be a scalar (1 element) but has " + std::to_string(mxGetNumberOfElements(param));
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " must be a scalar (1 element) but has " + std::to_string(mxGetNumberOfElements(param));
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
     }
@@ -103,33 +103,33 @@ std::optional<double> extractSFunctionParameter<double>(SimStruct *S, int paramI
 {
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsNumeric(param) || mxGetNumberOfElements(param) != 1)
     {
         if (!mxIsNumeric(param))
         {
-            errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not numeric but " + mxGetClassName(param);
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not numeric but " + mxGetClassName(param);
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
         if (mxGetNumberOfElements(param) != 1)
         {
-            errorMessage = "Parameter at index " + std::to_string(paramIndex) + " must be a scalar (1 element) but has " + std::to_string(mxGetNumberOfElements(param));
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " must be a scalar (1 element) but has " + std::to_string(mxGetNumberOfElements(param));
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
     }
@@ -142,33 +142,33 @@ std::optional<bool> extractSFunctionParameter<bool>(SimStruct *S, int paramIndex
 {
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsNumeric(param) || mxGetNumberOfElements(param) != 1)
     {
         if (!mxIsNumeric(param))
         {
-            errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not numeric but " + mxGetClassName(param);
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not numeric but " + mxGetClassName(param);
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
         if (mxGetNumberOfElements(param) != 1)
         {
-            errorMessage = "Parameter at index " + std::to_string(paramIndex) + " must be a scalar (1 element) but has " + std::to_string(mxGetNumberOfElements(param));
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " must be a scalar (1 element) but has " + std::to_string(mxGetNumberOfElements(param));
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
     }
@@ -181,25 +181,25 @@ std::optional<std::vector<int>> extractSFunctionParameter<std::vector<int>>(SimS
 {
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsNumeric(param))
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not a numeric array but " + mxGetClassName(param);
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not a numeric array but " + mxGetClassName(param);
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     mwSize numElements = mxGetNumberOfElements(param);
@@ -219,25 +219,25 @@ std::optional<std::vector<double>> extractSFunctionParameter<std::vector<double>
 {
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsNumeric(param))
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not a numeric array but " + mxGetClassName(param);
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not a numeric array but " + mxGetClassName(param);
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     mwSize numElements = mxGetNumberOfElements(param);
@@ -257,25 +257,25 @@ std::optional<std::vector<std::string>> extractSFunctionParameter<std::vector<st
 {
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsCell(param))
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not a cell array but " + mxGetClassName(param);
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not a cell array but " + mxGetClassName(param);
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     mwSize numElements = mxGetNumberOfElements(param);
@@ -286,15 +286,15 @@ std::optional<std::vector<std::string>> extractSFunctionParameter<std::vector<st
         const mxArray *cellElement = mxGetCell(param, i);
         if (cellElement == nullptr || !mxIsChar(cellElement))
         {
-            errorMessage = "Cell element " + std::to_string(i) + " in parameter at index " + std::to_string(paramIndex) + " is not a string";
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Cell element " + std::to_string(i) + " in parameter at index " + std::to_string(paramIndex) + " is not a string";
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
         char *nameBuffer = mxArrayToString(cellElement);
         if (nameBuffer == nullptr)
         {
-            errorMessage = "Failed to convert cell element " + std::to_string(i) + " to string in parameter at index " + std::to_string(paramIndex);
-            ssSetErrorStatus(S, errorMessage.c_str());
+            errorMessageParameters = "Failed to convert cell element " + std::to_string(i) + " to string in parameter at index " + std::to_string(paramIndex);
+            ssSetErrorStatus(S, errorMessageParameters.c_str());
             return std::nullopt;
         }
         result.emplace_back(nameBuffer);
@@ -307,25 +307,25 @@ std::optional<std::vector<std::vector<std::string>>> extractSFunctionMaskTable(S
 {
     if (ssGetNumSFcnParams(S) <= paramIndex)
     {
-        errorMessage =
+        errorMessageParameters =
             "Insufficient number of parameters set via ssSetNumSFcnParams().\n"
             "Expected at least " +
             std::to_string(paramIndex + 1) +
             ", but got " + std::to_string(ssGetNumSFcnParams(S));
-        ssSetErrorStatus(S, errorMessage.c_str());
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     const mxArray *param = ssGetSFcnParam(S, paramIndex);
     if (param == nullptr)
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is null (not set?)";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     if (!mxIsCell(param))
     {
-        errorMessage = "Parameter at index " + std::to_string(paramIndex) + " is not a cell array but " + mxGetClassName(param);
-        ssSetErrorStatus(S, errorMessage.c_str());
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " is not a cell array but " + mxGetClassName(param);
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
         return std::nullopt;
     }
     
@@ -342,8 +342,8 @@ std::optional<std::vector<std::vector<std::string>>> extractSFunctionMaskTable(S
             // fprintf(stderr, "Reading cell (%d, %d): Type %s\n", (int)i, (int)j, mxGetClassName(cellElement));
             if (cellElement == nullptr || (!mxIsChar(cellElement) && !mxIsDouble(cellElement)))
             {
-                errorMessage = "Cell element " + std::to_string(i) + " in parameter at index " + std::to_string(paramIndex) + " is not a string";
-                ssSetErrorStatus(S, errorMessage.c_str());
+                errorMessageParameters = "Cell element " + std::to_string(i) + " in parameter at index " + std::to_string(paramIndex) + " is not a string";
+                ssSetErrorStatus(S, errorMessageParameters.c_str());
                 return std::nullopt;
             }
 
@@ -362,8 +362,8 @@ std::optional<std::vector<std::vector<std::string>>> extractSFunctionMaskTable(S
             }
             if (nameBuffer == nullptr)
             {
-                errorMessage = "Failed to convert cell element " + std::to_string(i) + " to string in parameter at index " + std::to_string(paramIndex);
-                ssSetErrorStatus(S, errorMessage.c_str());
+                errorMessageParameters = "Failed to convert cell element " + std::to_string(i) + " to string in parameter at index " + std::to_string(paramIndex);
+                ssSetErrorStatus(S, errorMessageParameters.c_str());
                 return std::nullopt;
             }
             row.emplace_back(nameBuffer);

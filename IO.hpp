@@ -5,6 +5,13 @@
 #include <vector>
 #include <type_traits>
 
+/**
+ * MATLAB requires error messages to be in persistent memory.
+ * Since logically, only one error message can be active at any one time,
+ * we store it in this variable.
+ */
+std::string errorMessageIO;
+
 template <typename T>
 void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, int isDirectFeedthrough = 0)
 {
@@ -19,7 +26,8 @@ void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, in
     ssSetInputPortWidth(S, portIndex, rows * cols);
 
     // Set matrix dimensions
-    ssSetInputPortMatrixDimensions(S, portIndex, rows, cols);
+    if (cols > 1)
+        ssSetInputPortMatrixDimensions(S, portIndex, rows, cols);
     // DECL_AND_INIT_DIMSINFO(di);
     // if (cols > 1)
     // {
@@ -39,7 +47,6 @@ void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, in
     //     di.width = rows;
     // }
     // ssSetInputPortDimensionInfo(S, 0, &di);
-
 
     // Set data type based on template parameter T
     if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
@@ -120,8 +127,11 @@ void DefineOutputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1)
     // // Set port width (total number of elements)
     ssSetOutputPortWidth(S, portIndex, rows * cols);
 
+    // fprintf(stderr, "Output port width %d does not match expected width %d for Port %d\n",
+    //         ssGetOutputPortWidth(S, portIndex), rows * cols, portIndex);
     // Set matrix dimensions
-    ssSetOutputPortMatrixDimensions(S, portIndex, rows, cols);
+    if (cols > 1)
+        ssSetOutputPortMatrixDimensions(S, portIndex, rows, cols);
     // DECL_AND_INIT_DIMSINFO(di);
     // if (cols > 1)
     // {
@@ -210,14 +220,16 @@ inline T *GetOutputPortSignal(SimStruct *S, int portIndex, size_t size)
     // Check we have enough output ports
     if (ssGetNumOutputPorts(S) <= portIndex)
     {
-        ssSetErrorStatus(S, ("Insufficient number of output ports configured for Port " + std::to_string(portIndex)).c_str());
+        errorMessageIO = "Insufficient number of output ports configured for Port " + std::to_string(portIndex);
+        ssSetErrorStatus(S, errorMessageIO.c_str());
         return nullptr;
     }
 
     // Check if the output port width matches the expected width
     if (ssGetOutputPortWidth(S, portIndex) != size)
     {
-        ssSetErrorStatus(S, ("Output port width does not match expected width for Port " + std::to_string(portIndex)).c_str());
+        errorMessageIO = "Output port width " + std::to_string(ssGetOutputPortWidth(S, portIndex)) + " does not match expected width " + std::to_string(size) + " for Port " + std::to_string(portIndex);
+        ssSetErrorStatus(S, errorMessageIO.c_str());
         return nullptr;
     }
 
@@ -225,7 +237,8 @@ inline T *GetOutputPortSignal(SimStruct *S, int portIndex, size_t size)
     // Check if outputSignal is valid
     if (!outputSignal)
     {
-        ssWarning(S, ("Failed to get output port signal for port index " + std::to_string(portIndex)).c_str());
+        errorMessageIO = "Failed to get output port signal for port index " + std::to_string(portIndex);
+        ssWarning(S, errorMessageIO.c_str());
         return nullptr;
     }
 
@@ -279,7 +292,7 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T *values)
 template <typename T, size_t W>
 void SetVectorOutputPort(SimStruct *S, int portIndex, std::array<T, W> values)
 {
-    T *outputSignal = GetOutputPortSignal<T>(S, portIndex, 1);
+    T *outputSignal = GetOutputPortSignal<T>(S, portIndex, W);
     if (!outputSignal)
         return;
 
@@ -369,14 +382,16 @@ inline T *GetInputPortSignal(SimStruct *S, int portIndex, size_t size)
     // Check we have enough input ports
     if (ssGetNumInputPorts(S) <= portIndex)
     {
-        ssSetErrorStatus(S, ("Insufficient number of input ports configured for Port " + std::to_string(portIndex)).c_str());
+        errorMessageIO = "Insufficient number of input ports configured for Port " + std::to_string(portIndex);
+        ssSetErrorStatus(S, errorMessageIO.c_str());
         return nullptr;
     }
 
     // Check if the input port width matches the expected width
     if (ssGetInputPortWidth(S, portIndex) != size)
     {
-        ssSetErrorStatus(S, ("Input port width does not match expected width for Port " + std::to_string(portIndex)).c_str());
+        errorMessageIO = "Input port width " + std::to_string(ssGetInputPortWidth(S, portIndex)) + " does not match expected width " + std::to_string(size) + " for Port " + std::to_string(portIndex);
+        ssSetErrorStatus(S, errorMessageIO.c_str());
         return nullptr;
     }
 
@@ -384,7 +399,8 @@ inline T *GetInputPortSignal(SimStruct *S, int portIndex, size_t size)
     T *inputSignal = (T *)ssGetInputPortSignal(S, portIndex);
     if (!inputSignal)
     {
-        ssWarning(S, ("Failed to get input port signal for port index " + std::to_string(portIndex)).c_str());
+        errorMessageIO = "Failed to get input port signal for port index " + std::to_string(portIndex);
+        ssWarning(S, errorMessageIO.c_str());
         return nullptr;
     }
 

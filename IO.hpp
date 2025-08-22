@@ -15,30 +15,30 @@ void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, in
         return;
     }
 
-    // // Set port width (total number of elements)
-    // ssSetInputPortWidth(S, portIndex, rows * cols);
+    // Set port width (total number of elements)
+    ssSetInputPortWidth(S, portIndex, rows * cols);
 
-    // // Set matrix dimensions
-    // ssSetInputPortMatrixDimensions(S, portIndex, rows, cols);
-    DECL_AND_INIT_DIMSINFO(di);
-    if (cols > 1)
-    {
-        int_T dims[2];
-        di.numDims = 2;
-        dims[0] = rows;
-        dims[1] = cols;
-        di.dims = dims;
-        di.width = rows * cols;
-    }
-    else
-    {
-        int_T dims[1];
-        di.numDims = 1;
-        dims[0] = rows;
-        di.dims = dims;
-        di.width = rows;
-    }
-    ssSetInputPortDimensionInfo(S, 0, &di);
+    // Set matrix dimensions
+    ssSetInputPortMatrixDimensions(S, portIndex, rows, cols);
+    // DECL_AND_INIT_DIMSINFO(di);
+    // if (cols > 1)
+    // {
+    //     int_T dims[2];
+    //     di.numDims = 2;
+    //     dims[0] = rows;
+    //     dims[1] = cols;
+    //     di.dims = dims;
+    //     di.width = rows * cols;
+    // }
+    // else
+    // {
+    //     int_T dims[1];
+    //     di.numDims = 1;
+    //     dims[0] = rows;
+    //     di.dims = dims;
+    //     di.width = rows;
+    // }
+    // ssSetInputPortDimensionInfo(S, 0, &di);
 
 
     // Set data type based on template parameter T
@@ -118,29 +118,29 @@ void DefineOutputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1)
     }
 
     // // Set port width (total number of elements)
-    // ssSetOutputPortWidth(S, portIndex, rows * cols);
+    ssSetOutputPortWidth(S, portIndex, rows * cols);
 
-    // // Set matrix dimensions
-    // ssSetOutputPortMatrixDimensions(S, portIndex, rows, cols);
-    DECL_AND_INIT_DIMSINFO(di);
-    if (cols > 1)
-    {
-        int_T dims[2];
-        di.numDims = 2;
-        dims[0] = rows;
-        dims[1] = cols;
-        di.dims = dims;
-        di.width = rows * cols;
-    }
-    else
-    {
-        int_T dims[1];
-        di.numDims = 1;
-        dims[0] = rows;
-        di.dims = dims;
-        di.width = rows;
-    }
-    ssSetOutputPortDimensionInfo(S, 0, &di);
+    // Set matrix dimensions
+    ssSetOutputPortMatrixDimensions(S, portIndex, rows, cols);
+    // DECL_AND_INIT_DIMSINFO(di);
+    // if (cols > 1)
+    // {
+    //     int_T dims[2];
+    //     di.numDims = 2;
+    //     dims[0] = rows;
+    //     dims[1] = cols;
+    //     di.dims = dims;
+    //     di.width = rows * cols;
+    // }
+    // else
+    // {
+    //     int_T dims[1];
+    //     di.numDims = 1;
+    //     dims[0] = rows;
+    //     di.dims = dims;
+    //     di.width = rows;
+    // }
+    // ssSetOutputPortDimensionInfo(S, 0, &di);
 
     // Set data type based on template parameter T
     if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)

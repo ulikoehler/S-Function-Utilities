@@ -290,6 +290,17 @@ void SetVectorOutputPort(SimStruct *S, int portIndex, T *values)
 }
 
 template <typename T, size_t W>
+void SetVectorOutputPort(SimStruct *S, int portIndex, const T *values)
+{
+    T *outputSignal = GetOutputPortSignal<T>(S, portIndex, W);
+    if (!outputSignal)
+        return;
+
+    // Set the output port values
+    std::copy(values, values + W, outputSignal);
+}
+
+template <typename T, size_t W>
 void SetVectorOutputPort(SimStruct *S, int portIndex, std::array<T, W> values)
 {
     T *outputSignal = GetOutputPortSignal<T>(S, portIndex, W);

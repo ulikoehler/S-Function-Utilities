@@ -81,7 +81,7 @@ void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, in
     {
         ssSetInputPortDataType(S, portIndex, SS_DOUBLE);
     }
-    else if constexpr (std::is_same_v<T, boolean_T>)
+    else if constexpr (std::is_same_v<T, boolean_T> || std::is_same_v<T, bool>)
     {
         ssSetInputPortDataType(S, portIndex, SS_BOOLEAN);
     }
@@ -185,7 +185,7 @@ void DefineOutputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1)
     {
         ssSetOutputPortDataType(S, portIndex, SS_DOUBLE);
     }
-    else if constexpr (std::is_same_v<T, boolean_T>)
+    else if constexpr (std::is_same_v<T, boolean_T> || std::is_same_v<T, bool>)
     {
         ssSetOutputPortDataType(S, portIndex, SS_BOOLEAN);
     }

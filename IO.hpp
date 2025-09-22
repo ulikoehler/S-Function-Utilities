@@ -93,7 +93,7 @@ void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, in
 
     // Set direct feedthrough
     ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
-    ssSetInputPortRequiredContiguous(S, portIndex, 1);
+    ssSetInputPortRequiredContiguous(S, portIndex, 1); // This ensures that the input signal is stored in a contiguous memory block
 }
 
 template <typename T>

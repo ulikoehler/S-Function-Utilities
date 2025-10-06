@@ -207,7 +207,7 @@ std::optional<std::vector<int>> extractSFunctionParameter<std::vector<int>>(SimS
     mwSize numElements = mxGetNumberOfElements(param);
     std::vector<int> result;
     result.reserve(numElements);
-    double *data = mxGetPr(param);
+    const double *data = mxGetPr(param);
     for (mwSize i = 0; i < numElements; ++i)
     {
         result.push_back(static_cast<int>(data[i]));
@@ -245,7 +245,7 @@ std::optional<std::vector<double>> extractSFunctionParameter<std::vector<double>
     mwSize numElements = mxGetNumberOfElements(param);
     std::vector<double> result;
     result.reserve(numElements);
-    double *data = mxGetPr(param);
+    const double *data = mxGetPr(param);
     for (mwSize i = 0; i < numElements; ++i)
     {
         result.push_back(data[i]);

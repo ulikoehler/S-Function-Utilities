@@ -17,6 +17,7 @@ std::optional<T> extractSFunctionParameter(SimStruct *S, int paramIndex);
 std::string errorMessageParameters;
 
 // Specialization for std::string
+#if defined(MATLAB_MEX_FILE)
 template <>
 std::optional<std::string> extractSFunctionParameter<std::string>(SimStruct *S, int paramIndex)
 {
@@ -56,6 +57,7 @@ std::optional<std::string> extractSFunctionParameter<std::string>(SimStruct *S, 
     mxFree((void *)pCharArray);
     return result;
 }
+#endif
 
 // Specialization for int
 template <>
@@ -205,7 +207,7 @@ std::optional<std::vector<int>> extractSFunctionParameter<std::vector<int>>(SimS
     mwSize numElements = mxGetNumberOfElements(param);
     std::vector<int> result;
     result.reserve(numElements);
-    double *data = mxGetPr(param);
+    const double *data = mxGetPr(param);
     for (mwSize i = 0; i < numElements; ++i)
     {
         result.push_back(static_cast<int>(data[i]));
@@ -243,7 +245,7 @@ std::optional<std::vector<double>> extractSFunctionParameter<std::vector<double>
     mwSize numElements = mxGetNumberOfElements(param);
     std::vector<double> result;
     result.reserve(numElements);
-    double *data = mxGetPr(param);
+    const double *data = mxGetPr(param);
     for (mwSize i = 0; i < numElements; ++i)
     {
         result.push_back(data[i]);
@@ -251,6 +253,7 @@ std::optional<std::vector<double>> extractSFunctionParameter<std::vector<double>
     return result;
 }
 
+#if defined(MATLAB_MEX_FILE)
 // Specialization for std::vector<std::string>
 template <>
 std::optional<std::vector<std::string>> extractSFunctionParameter<std::vector<std::string>>(SimStruct *S, int paramIndex)
@@ -302,7 +305,9 @@ std::optional<std::vector<std::string>> extractSFunctionParameter<std::vector<st
     }
     return result;
 }
+#endif
 
+#if defined(MATLAB_MEX_FILE)
 std::optional<std::vector<std::vector<std::string>>> extractSFunctionMaskTable(SimStruct *S, int paramIndex)
 {
     if (ssGetNumSFcnParams(S) <= paramIndex)
@@ -373,3 +378,4 @@ std::optional<std::vector<std::vector<std::string>>> extractSFunctionMaskTable(S
     }
     return result;
 }
+#endif

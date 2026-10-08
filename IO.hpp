@@ -12,6 +12,35 @@
  */
 std::string errorMessageIO;
 
+/**
+ * Map a C++ type to its Simulink DTypeId.
+ * Unknown types default to SS_DOUBLE (same behavior as the port macros below).
+ */
+template <typename T>
+constexpr DTypeId SFunctionDTypeId()
+{
+    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
+        return SS_UINT8;
+    else if constexpr (std::is_same_v<T, int8_T>)
+        return SS_INT8;
+    else if constexpr (std::is_same_v<T, uint16_T>)
+        return SS_UINT16;
+    else if constexpr (std::is_same_v<T, int16_T>)
+        return SS_INT16;
+    else if constexpr (std::is_same_v<T, uint32_T>)
+        return SS_UINT32;
+    else if constexpr (std::is_same_v<T, int32_T>)
+        return SS_INT32;
+    else if constexpr (std::is_same_v<T, real32_T>)
+        return SS_SINGLE;
+    else if constexpr (std::is_same_v<T, real_T>)
+        return SS_DOUBLE;
+    else if constexpr (std::is_same_v<T, boolean_T> || std::is_same_v<T, bool>)
+        return SS_BOOLEAN;
+    else
+        return SS_DOUBLE;
+}
+
 template <typename T>
 void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, int isDirectFeedthrough = 0)
 {
@@ -49,47 +78,10 @@ void DefineInputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1, in
     // ssSetInputPortDimensionInfo(S, 0, &di);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_UINT8);
-    }
-    else if constexpr (std::is_same_v<T, int8_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_INT8);
-    }
-    else if constexpr (std::is_same_v<T, uint16_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_UINT16);
-    }
-    else if constexpr (std::is_same_v<T, int16_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_INT16);
-    }
-    else if constexpr (std::is_same_v<T, uint32_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_UINT32);
-    }
-    else if constexpr (std::is_same_v<T, int32_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_INT32);
-    }
-    else if constexpr (std::is_same_v<T, real32_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_SINGLE);
-    }
-    else if constexpr (std::is_same_v<T, real_T>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_DOUBLE);
-    }
-    else if constexpr (std::is_same_v<T, boolean_T> || std::is_same_v<T, bool>)
-    {
-        ssSetInputPortDataType(S, portIndex, SS_BOOLEAN);
-    }
-    else
-    {
-        // Default to double for unknown types
-        ssSetInputPortDataType(S, portIndex, SS_DOUBLE);
-    }
+    ssSetInputPortDataType(S, portIndex, SFunctionDTypeId<T>());
+
+    // Only accept real-valued signals (reject complex inputs explicitly)
+    ssSetInputPortComplexSignal(S, portIndex, COMPLEX_NO);
 
     // Set direct feedthrough
     ssSetInputPortDirectFeedThrough(S, portIndex, isDirectFeedthrough);
@@ -153,47 +145,10 @@ void DefineOutputPort(SimStruct *S, int portIndex, int rows = 1, int cols = 1)
     // ssSetOutputPortDimensionInfo(S, 0, &di);
 
     // Set data type based on template parameter T
-    if constexpr (std::is_same_v<T, uint8_T> || std::is_same_v<T, char_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_UINT8);
-    }
-    else if constexpr (std::is_same_v<T, int8_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_INT8);
-    }
-    else if constexpr (std::is_same_v<T, uint16_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_UINT16);
-    }
-    else if constexpr (std::is_same_v<T, int16_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_INT16);
-    }
-    else if constexpr (std::is_same_v<T, uint32_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_UINT32);
-    }
-    else if constexpr (std::is_same_v<T, int32_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_INT32);
-    }
-    else if constexpr (std::is_same_v<T, real32_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_SINGLE);
-    }
-    else if constexpr (std::is_same_v<T, real_T>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_DOUBLE);
-    }
-    else if constexpr (std::is_same_v<T, boolean_T> || std::is_same_v<T, bool>)
-    {
-        ssSetOutputPortDataType(S, portIndex, SS_BOOLEAN);
-    }
-    else
-    {
-        // Default to double for unknown types
-        ssSetOutputPortDataType(S, portIndex, SS_DOUBLE);
-    }
+    ssSetOutputPortDataType(S, portIndex, SFunctionDTypeId<T>());
+
+    // Only produce real-valued signals
+    ssSetOutputPortComplexSignal(S, portIndex, COMPLEX_NO);
 }
 
 template <typename T>
@@ -402,6 +357,14 @@ inline T *GetInputPortSignal(SimStruct *S, int portIndex, size_t size)
     if (ssGetInputPortWidth(S, portIndex) != size)
     {
         errorMessageIO = "Input port width " + std::to_string(ssGetInputPortWidth(S, portIndex)) + " does not match expected width " + std::to_string(size) + " for Port " + std::to_string(portIndex);
+        ssSetErrorStatus(S, errorMessageIO.c_str());
+        return nullptr;
+    }
+
+    // Check if the input port data type matches the expected type
+    if (ssGetInputPortDataType(S, portIndex) != SFunctionDTypeId<T>())
+    {
+        errorMessageIO = "Input port data type mismatch for Port " + std::to_string(portIndex);
         ssSetErrorStatus(S, errorMessageIO.c_str());
         return nullptr;
     }

@@ -49,8 +49,12 @@ std::optional<std::string> extractSFunctionParameter<std::string>(SimStruct *S, 
 
     // Get string length and allocate buffer
     const char *pCharArray = mxArrayToString(param);
-
-    printf("Extracted string parameter '%s'\n", pCharArray);
+    if (pCharArray == nullptr)
+    {
+        errorMessageParameters = "Failed to convert parameter at index " + std::to_string(paramIndex) + " to string";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
+        return std::nullopt;
+    }
 
     std::string result(pCharArray);
     // Free temporary buffer
@@ -208,6 +212,12 @@ std::optional<std::vector<int>> extractSFunctionParameter<std::vector<int>>(SimS
     std::vector<int> result;
     result.reserve(numElements);
     const double *data = mxGetPr(param);
+    if (data == nullptr)
+    {
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " must be a double array (got " + mxGetClassName(param) + ")";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
+        return std::nullopt;
+    }
     for (mwSize i = 0; i < numElements; ++i)
     {
         result.push_back(static_cast<int>(data[i]));
@@ -246,6 +256,12 @@ std::optional<std::vector<double>> extractSFunctionParameter<std::vector<double>
     std::vector<double> result;
     result.reserve(numElements);
     const double *data = mxGetPr(param);
+    if (data == nullptr)
+    {
+        errorMessageParameters = "Parameter at index " + std::to_string(paramIndex) + " must be a double array (got " + mxGetClassName(param) + ")";
+        ssSetErrorStatus(S, errorMessageParameters.c_str());
+        return std::nullopt;
+    }
     for (mwSize i = 0; i < numElements; ++i)
     {
         result.push_back(data[i]);

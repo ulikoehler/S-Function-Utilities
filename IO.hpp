@@ -401,6 +401,7 @@ std::optional<std::vector<T>> GetVectorInputPort(SimStruct *S, int portIndex, si
 
     // Get the input port values
     std::vector<T> values;
+    values.reserve(width);
     for (size_t i = 0; i < width; ++i)
     {
         values.push_back(inputSignal[i]);
